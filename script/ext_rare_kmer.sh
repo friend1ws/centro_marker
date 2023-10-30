@@ -23,7 +23,6 @@ then
 fi
 
 
-<<_
 
 for cfile in `ls ../output/cen_seq/hifiasm_v0.14_raw/*/chr${CEN_ID}/*.chm13.cen.filt.fa`; 
 do 
@@ -39,6 +38,9 @@ do
     fi 
 done
 
+for sfile in `ls ../output/rare_kmer/chr7/hifiasm_v0.14_raw/*.sd_info.txt`; do bsfile=`basename $sfile`; hname=${bsfile%.sd_info.txt}; awk -v env_var="$hname" -v OFS='\t' -F'\t' '{if ($6 == "True") {print env_var FS $0}}' $sfile; done > ../output/rare_kmer/chr${CEN_ID}/merged.sd_info.txt
+
+
 for cfile in `ls ../output/cen_seq/hifiasm_v0.19.5/*/chr${CEN_ID}/*.chm13.cen.filt.fa`;
 do
     if [ -s $cfile ];
@@ -49,14 +51,15 @@ do
 
 done
 
+for sfile in `ls ../output/rare_kmer/chr7/hifiasm_v0.19.5/*.sd_info.txt`; do bsfile=`basename $sfile`; hname=${bsfile%.sd_info.txt}; awk -v env_var="$hname" -v OFS='\t' -F'\t' '{if ($6 == "True") {print env_var FS $0}}' $sfile; done >> ../output/rare_kmer/chr${CEN_ID}/merged.sd_info.txt
+
+
 python3 rare_kmer_parse.py ../output/rare_kmer/chr${CEN_ID} ../output/rare_kmer/chr${CEN_ID}/merged.rare_kmer.txt
 
 
 singularity exec ~/image/kmer_utils_0.1.2.sif python3 filt_kmer.py ../output/rare_kmer/chr${CEN_ID}/merged.rare_kmer.txt ../output/rare_kmer/chr${CEN_ID} ../output/rare_kmer/chr${CEN_ID}/merged.rare_kmer.pruned.txt
-_
 
 python3 add_rare_kmer_info.py ../output/rare_kmer/chr${CEN_ID}/merged.rare_kmer.pruned.txt ../output/rare_kmer/chr${CEN_ID} ../output/rare_kmer/chr${CEN_ID}/merged.rare_kmer.pruned.annot.txt
-
 
 
 

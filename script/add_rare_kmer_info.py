@@ -87,7 +87,7 @@ with open(output_file, 'w') as hout:
         rel_pos, num, num_kmer_is_inv, num_is_inv_contig = [], 0, 0, 0
         for FFF in kmer2info[kmer]:
             contig_name, platform, contig_len, pos, strand, is_inv_contig, kmer_is_inv = FFF.split(',')
-            rel_pos.append(float(pos) / float(contig_len))
+            rel_pos.append( (float(pos) - 100000) / (float(contig_len) - 200000) )
             num = num + 1
             if kmer_is_inv == "True":
                 num_kmer_is_inv = num_kmer_is_inv + 1

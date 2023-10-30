@@ -53,7 +53,7 @@ class SD_info:
 
         self.is_complete = False
         if len(self.cen_region_list) == 1:
-            if (max_reg_len > 500000 and self.cen_start > 5 * cen_margin and self.contig_len - self.cen_end > 5 * cen_margin): self.is_complete = True
+            if (max_reg_len > 500000 and self.cen_start > 20 * cen_margin and self.contig_len - self.cen_end > 20 * cen_margin): self.is_complete = True
                  
         
         if self.is_complete:

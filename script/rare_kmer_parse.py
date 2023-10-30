@@ -56,7 +56,7 @@ import glob, os, sys
 
 input_dir = sys.argv[1]
 output_file = sys.argv[2]
-
+kmer_size = sys.argv[3]
 
 all_fasta_files = glob.glob(input_dir + "/*/*.chm13.cen.filt.fa")
 black_list_kmer = {}
@@ -64,7 +64,7 @@ unique_kmer_list_raw = {}
 for fasta_file in sorted(all_fasta_files):
     hap = os.path.basename(fasta_file).replace(".chm13.cen.filt.fa", '')
 
-    temp_kmer2count = gather_kmer(fasta_file)
+    temp_kmer2count = gather_kmer(fasta_file, int(kmer_size))
     print(f'Read haplotype: {hap}, kmer count: {len(temp_kmer2count)}') 
     
     

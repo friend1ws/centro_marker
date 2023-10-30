@@ -9,6 +9,7 @@ set -xe
 module load /usr/local/package/modulefiles/singularity/3.7.0
 
 TASK_ID=$SGE_TASK_ID
+# TASK_ID=1
 PLATFORM=$1
 CEN_ID=$2
 
@@ -49,11 +50,10 @@ python3 ext_cen.py ${OUT_DIR}/${SAMPLE}/${SAMPLE}.mat.chm13.paf ${tcen_chr} ${tc
 singularity exec ~/image/stringdecomposer_1.1.2--py310h30d9df9_1.sif stringdecomposer -t 2 ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.pat.chm13.cen.fa ../db/HORmonData20211006/MonomersFinal/cen${tcen_id}_monomers.fa -o ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.pat.stringdecomposer
 singularity exec ~/image/stringdecomposer_1.1.2--py310h30d9df9_1.sif stringdecomposer -t 2 ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.mat.chm13.cen.fa ../db/HORmonData20211006/MonomersFinal/cen${tcen_id}_monomers.fa -o ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.mat.stringdecomposer
 
-
+_
 python3 get_sd_info.py ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.pat.stringdecomposer/final_decomposition.tsv > ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.pat.sd_info.txt
 python3 get_sd_info.py ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.mat.stringdecomposer/final_decomposition.tsv > ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.mat.sd_info.txt
 
-_
 
 echo -n > ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.pat.chm13.cen.filt.fa
 pcount=`awk -F'\t' 'BEGIN {count=0} { if ($6 == "True") count++} END {print count}' ${OUT_DIR}/${SAMPLE}/${tcen_chr}/${SAMPLE}.pat.sd_info.txt`
@@ -67,6 +67,14 @@ then
         tend=`echo $line | cut -f 3 -d ' '`
         tstrand=`echo $line | cut -f 5 -d ' '`
         tcomplete=`echo $line | cut -f 6 -d ' '` 
+
+        if [[ $tcomplete != "True" ]]
+        then
+            continue
+        fi
+
+        tstart=$((tstart - 100000))
+        tend=$((tend + 100000))
 
         treg=${tcontig}:${tstart}-${tend}
         if [ $tcomplete = "True" ]
@@ -94,6 +102,14 @@ then
         tend=`echo $line | cut -f 3 -d ' '`
         tstrand=`echo $line | cut -f 5 -d ' '`
         tcomplete=`echo $line | cut -f 6 -d ' '`
+
+        if [[ $tcomplete != "True" ]]
+        then
+            continue
+        fi
+
+        tstart=$((tstart - 100000))
+        tend=$((tend + 100000))
 
         treg=${tcontig}:${tstart}-${tend}
         if [ $tcomplete = "True" ]
